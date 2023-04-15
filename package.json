@@ -1,0 +1,36 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "amirkhan schamgonov",
+  "license": "ISC",
+  "devDependencies": {
+    "colors": "^1.4.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.21",
+    "prettier": "^2.8.4",
+    "prettier-plugin-sort-imports": "^1.7.1"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^7.6.0",
+    "@prisma/client": "^4.11.0",
+    "argon2": "^0.30.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "faker": "^6.6.6",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.10.0",
+    "prisma": "^4.11.0"
+  }
+}

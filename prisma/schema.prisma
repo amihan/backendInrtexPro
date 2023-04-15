@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admins {
+  id       Int    @id @default(autoincrement())
+  login    String @db.Text
+  password String @db.Text
+  fio      String @db.Text
+  role     String @db.Text
+}
+
+model ads {
+  id              Int    @id @default(autoincrement())
+  title           String @db.Text
+  text            String @db.LongText
+  recipient_group String @db.Text
+  recipients      String @db.Text
+  date            String @db.Text
+  author          Int
+}
+
+model attendance {
+  id              Int      @id @default(autoincrement())
+  dateat          DateTime @db.Date
+  iduser          Int
+  group_id        Int
+  status          String?  @db.Text
+  punctuality     Float?   @db.Float
+  behaviour       Float?   @db.Float
+  activity        Float?   @db.Float
+  tasks           Float?   @db.Float
+  estimation_home Float?   @db.Float
+}
+
+model contracts {
+  id                Int     @id @default(autoincrement())
+  number            String  @db.VarChar(30)
+  date              String  @db.VarChar(30)
+  name              String  @db.Text
+  date_birth_parent String? @db.Text
+  child             String  @db.Text
+  date_birth        String  @db.Text
+  passport          String  @db.Text
+  issued            String  @db.Text
+  phone             String  @db.Text
+  residency         String  @db.Text
+  id_user           Int
+}
+
+model courses {
+  id          Int    @id @default(autoincrement())
+  namecourse  String @db.Text
+  description String @db.Text
+}
+
+model group_members {
+  id      Int @id @default(autoincrement())
+  groupid Int
+  userid  Int
+}
+
+model groupuser {
+  id       Int    @id @default(autoincrement())
+  name     String @db.Text
+  course   String @db.Text
+  address  String @db.Text
+  teachers String @db.Text
+  days     String @db.Text
+  times    String @db.Text
+  year     Int
+}
+
+model individual {
+  id           Int    @id @default(autoincrement())
+  contract     String @db.Text
+  datecontract String @db.Text
+  fio          String @db.Text
+  course       String @db.Text
+  teacher      Int
+  datepay      String @db.Text
+  phone        String @db.Text
+  datebirth    String @db.Text
+}
+
+model ktplan {
+  id         Int      @id @default(autoincrement())
+  datelesson DateTime @db.Date
+  namelesson String   @db.Text
+  time_begin String   @db.Text
+  time_end   String   @db.Text
+  type       String   @db.Text
+  cabinet    String   @db.Text
+  place      String   @db.Text
+  homework   String?  @db.Text
+  max_points String?  @map("max-points") @db.Text
+  idgroup    String   @db.Text
+}
+
+model lessons {
+  id         Int    @id @default(autoincrement())
+  name       String @db.Text
+  date       String @db.Text
+  time_begin String @db.Text
+  time_end   String @db.Text
+  type       String @db.Text
+  cabinet    String @db.Text
+  fio        String @db.Text
+}
+
+model openday {
+  id       Int    @id @default(autoincrement())
+  parent   String @db.Text
+  kid      String @db.Text
+  tel      String @db.Text
+  age      String @db.Text
+  office   String @db.VarChar(10)
+  agegroup String @db.VarChar(30)
+}
+
+model parents {
+  name1    String? @db.Text
+  phone1   String? @db.Text
+  name2    String? @db.Text
+  phone2   String? @db.Text
+  login    String? @db.Text
+  password String? @db.Text
+  email    String? @db.Text
+  id       Int     @id @default(autoincrement())
+  hash     String  @db.Text
+}
+
+model pay {
+  id        Int      @id @default(autoincrement())
+  datepay   DateTime @db.Date
+  sumpay    Int
+  iduser    Int
+  namegroup String   @db.Text
+  sumpayone Int
+  countless Float    @db.Float
+  type      String   @db.Text
+  way       String   @db.Text
+  datebegin String   @db.Text
+}
+
+model statuses_summer {
+  id      Int     @id @default(autoincrement())
+  name    String  @db.Text
+  comment String? @db.Text
+}
+
+model summer {
+  id          Int     @id @default(autoincrement())
+  parent      String  @db.Text
+  kid         String  @db.Text
+  tel         String  @db.Text
+  call_type   String  @db.Text
+  age         String  @db.Text
+  type        String? @db.Text
+  office      String  @db.Text
+  camp_change String  @db.Text
+  date_time   String  @db.Text
+  status      Int
+  comment     String? @db.Text
+  date_change String  @db.Text
+  utm_source  String? @db.Text
+}
+
+model teachers {
+  id       Int    @id @default(autoincrement())
+  surname  String @db.Text
+  initials String @db.Text
+  avatar   String @db.Text
+  color    String @db.Text
+}
+
+model users {
+  id           Int     @id @default(autoincrement())
+  contract     String? @db.Text
+  datacontract String? @db.Text
+  fio          String  @db.Text
+  datepay      String  @db.Text
+  telStudent   String  @db.Text
+  dateBirth    String  @db.Text
+  parent       String? @db.Text
+}
