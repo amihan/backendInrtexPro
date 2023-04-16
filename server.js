@@ -6,6 +6,7 @@ import userRoutes from './app/user/user.routes.js'
 import newsRoutes from './app/news/news.routes.js'
 import paymentsRoutes from './app/payments/payments.routes.js'
 import lessonsRoutes from './app/lessons/lessons.routes.js'
+import payRoutes from './app/pay/pay.routes.js'
 
 import dotenv from 'dotenv'
 import morgan from 'morgan'
@@ -43,6 +44,8 @@ async function main() {
     app.use('/api/payments', paymentsRoutes)
 
     app.use('/api/lessons', lessonsRoutes)
+
+    app.use('/api/pay', payRoutes)
 
 
     app.use(notFound)

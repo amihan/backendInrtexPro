@@ -7,6 +7,6 @@ import { protect } from './../middleware/auth.middleware.js';
 const router = express.Router();
 
 
-router.route('/').get(protect, getNews);
+router.route('/').get(getNews);
 
 export default router;

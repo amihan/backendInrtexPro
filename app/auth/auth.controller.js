@@ -1,10 +1,6 @@
-
-
-// import { faker } from "@faker-js/faker";
-import { hash, verify } from "argon2";
+import bcrypt from 'bcrypt';
 import asyncHandler from "express-async-handler";
 import { prisma } from "../prisma.js";
-import { UserFields } from "../utils/user.utils.js";
 import { generateToken } from "./generate-token.js";
 
 
@@ -20,10 +16,9 @@ export const authUser = asyncHandler(async (req, res) => {
         where: {
             email
         }
-    }
-    )
+    })
 
-    const isValidPassword = await verify(user.password, password)
+    const isValidPassword = bcrypt.compare(user.password, password)
 
     if (user && isValidPassword) {
         const token = generateToken(user.id)
@@ -60,12 +55,10 @@ export const registerUser = asyncHandler(async (req, res) => {
     const user = await prisma.parents.create({
         data: {
             email,
-            password: await hash(password),
+            password: await bcrypt.hash(password, 5),
             login,
-            hash: '1212'
+            hash: 'bcrypt'
         }
-        // ,
-        // select: UserFields
     })
 
 

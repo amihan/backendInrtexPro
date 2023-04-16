@@ -8,11 +8,12 @@ datasource db {
 }
 
 model admins {
-  id       Int    @id @default(autoincrement())
-  login    String @db.Text
-  password String @db.Text
-  fio      String @db.Text
-  role     String @db.Text
+  id       Int     @id @default(autoincrement())
+  login    String  @db.Text
+  password String  @db.Text
+  fio      String  @db.Text
+  role     String  @db.Text
+  avatar   String? @db.Text
 }
 
 model ads {
@@ -54,9 +55,12 @@ model contracts {
 }
 
 model courses {
-  id          Int    @id @default(autoincrement())
-  namecourse  String @db.Text
-  description String @db.Text
+  id           Int    @id @default(autoincrement())
+  namecourse   String @db.Text
+  abbreviation String @db.Text
+  description  String @db.Text
+  color1       String @db.VarChar(50)
+  color2       String @db.VarChar(50)
 }
 
 model group_members {
@@ -66,14 +70,21 @@ model group_members {
 }
 
 model groupuser {
-  id       Int    @id @default(autoincrement())
-  name     String @db.Text
-  course   String @db.Text
-  address  String @db.Text
-  teachers String @db.Text
-  days     String @db.Text
-  times    String @db.Text
-  year     Int
+  id                Int     @id @default(autoincrement())
+  name              String  @db.Text
+  course            String  @db.Text
+  address           String  @db.Text
+  teachers          String  @db.Text
+  days              String? @db.Text
+  times             String? @db.Text
+  year              Int
+  first_day         Int     @map("first-day")
+  first_time_start  String  @map("first-time-start") @db.VarChar(50)
+  first_time_end    String  @map("first-time-end") @db.VarChar(50)
+  second_day        Int?    @map("second-day")
+  second_time_start String? @map("second-time-start") @db.VarChar(50)
+  second_time_end   String? @map("second-time-end") @db.VarChar(50)
+  cabinet           Int
 }
 
 model individual {
@@ -102,17 +113,6 @@ model ktplan {
   idgroup    String   @db.Text
 }
 
-model lessons {
-  id         Int    @id @default(autoincrement())
-  name       String @db.Text
-  date       String @db.Text
-  time_begin String @db.Text
-  time_end   String @db.Text
-  type       String @db.Text
-  cabinet    String @db.Text
-  fio        String @db.Text
-}
-
 model openday {
   id       Int    @id @default(autoincrement())
   parent   String @db.Text
@@ -121,6 +121,7 @@ model openday {
   age      String @db.Text
   office   String @db.VarChar(10)
   agegroup String @db.VarChar(30)
+  year     Int
 }
 
 model parents {
@@ -136,16 +137,15 @@ model parents {
 }
 
 model pay {
-  id        Int      @id @default(autoincrement())
-  datepay   DateTime @db.Date
-  sumpay    Int
-  iduser    Int
-  namegroup String   @db.Text
-  sumpayone Int
-  countless Float    @db.Float
-  type      String   @db.Text
-  way       String   @db.Text
-  datebegin String   @db.Text
+  id          Int    @id @default(autoincrement())
+  id_user     Int    @map("id-user")
+  id_group    Int    @map("id-group")
+  price       Int
+  type        String @db.VarChar(10)
+  way         String @db.VarChar(10)
+  date_create Int    @map("date-create")
+  date_change Int
+  month       Int
 }
 
 model statuses_summer {
@@ -158,13 +158,13 @@ model summer {
   id          Int     @id @default(autoincrement())
   parent      String  @db.Text
   kid         String  @db.Text
-  tel         String  @db.Text
-  call_type   String  @db.Text
-  age         String  @db.Text
+  tel         String? @db.Text
+  call_type   String? @db.Text
+  age         String? @db.Text
   type        String? @db.Text
-  office      String  @db.Text
-  camp_change String  @db.Text
-  date_time   String  @db.Text
+  office      String? @db.Text
+  camp_change String? @db.Text
+  date_time   String? @db.Text
   status      Int
   comment     String? @db.Text
   date_change String  @db.Text
@@ -177,6 +177,7 @@ model teachers {
   initials String @db.Text
   avatar   String @db.Text
   color    String @db.Text
+  status   Int?
 }
 
 model users {
@@ -184,8 +185,89 @@ model users {
   contract     String? @db.Text
   datacontract String? @db.Text
   fio          String  @db.Text
+  groupuser    String? @db.Text
   datepay      String  @db.Text
+  parents      String  @db.Text
+  telParents   String  @db.Text
   telStudent   String  @db.Text
   dateBirth    String  @db.Text
   parent       String? @db.Text
+}
+
+model application_traning {
+  id          Int     @id @default(autoincrement())
+  date        Int
+  id_admin    Int
+  name_child  String  @db.VarChar(100)
+  age_child   Int
+  name_parent String  @db.VarChar(100)
+  phone       String  @db.VarChar(50)
+  courses     String? @db.Text
+  comment     String  @db.Text
+  id_channel  Int
+  year        Int
+}
+
+model cabinet {
+  id     Int    @id @default(autoincrement())
+  name   String @db.VarChar(50)
+  office Int
+}
+
+model days_week {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(50)
+
+  @@map("days-week")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model group_members_probes {
+  id       Int
+  id_group Int
+  id_user  Int
+
+  @@ignore
+}
+
+model office {
+  id      Int    @id @default(autoincrement())
+  name    String @db.VarChar(50)
+  address String @db.Text
+}
+
+model pay_old {
+  id        Int    @id @default(autoincrement())
+  datepay   String @db.Text
+  sumpay    Int
+  iduser    Int
+  namegroup String @db.Text
+  sumpayone Int
+  countless Float  @db.Float
+  type      String @db.Text
+  way       String @db.Text
+  datebegin String @db.Text
+
+  @@map("pay-old")
+}
+
+model pay_type {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(50)
+
+  @@map("pay-type")
+}
+
+model pay_way {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(50)
+
+  @@map("pay-way")
+}
+
+model utm_source {
+  id   Int    @id @default(autoincrement())
+  eng  String @db.Text
+  ru   String @db.Text
+  link String @db.Text
 }

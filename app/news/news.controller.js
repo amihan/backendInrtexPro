@@ -8,7 +8,9 @@ import { prisma } from '../prisma.js'
 // @access  Private
 export const getNews = asyncHandler(async (req, res) => {
 
-    const news = await prisma.ads.findMany()
+    // const news = await prisma.ads.findMany()
+
+    const news = await prisma.$queryRaw`SELECT * FROM ads`
 
     res.json(news)
 })

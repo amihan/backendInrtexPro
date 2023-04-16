@@ -6,7 +6,6 @@ import { UserFields } from '../utils/user.utils.js';
 import { prisma } from './../prisma.js';
 
 
-
 export const protect = asyncHandler(async (req, res, next) => {
     let token
 
@@ -28,9 +27,7 @@ export const protect = asyncHandler(async (req, res, next) => {
             res.status(401)
             throw new Error('Not authorized, token failed')
         }
-
     }
-
 
     if (!token) {
         res.status(401)
