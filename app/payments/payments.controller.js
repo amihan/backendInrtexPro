@@ -7,10 +7,15 @@ import { prisma } from '../prisma.js'
 // @route   GET /api/users/profile
 // @access  Private
 export const getPayments = asyncHandler(async (req, res) => {
-    const user = await prisma.pay.findMany({
+
+    const { id, idgroup } = req.params
+
+    const payMonths = await prisma.pay.findMany({
         where: {
-            iduser: req.user.id
+            id_user: Number(id),
+            id_group: Number(idgroup)
         }
     })
-    res.json(user)
+
+    res.json(payMonths)
 })

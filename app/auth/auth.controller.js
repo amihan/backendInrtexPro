@@ -2,6 +2,8 @@ import bcrypt from 'bcrypt';
 import asyncHandler from "express-async-handler";
 import { prisma } from "../prisma.js";
 import { generateToken } from "./generate-token.js";
+import jwt from 'jsonwebtoken';
+// import tokenService from '../service/token-service.js';
 
 
 // @desc    Auth user
@@ -9,27 +11,30 @@ import { generateToken } from "./generate-token.js";
 // @access  Public
 
 export const authUser = asyncHandler(async (req, res) => {
+    try {
+        console.log(req.body)
+        const { login, password } = req.body;
 
-    const { email, password } = req.body;
+        const user = await prisma.parents.findFirst({
+            where: {
+                login
+            }
+        })
 
-    const user = await prisma.parents.findFirst({
-        where: {
-            email
+        if (!user) {
+            return res.status(400).json({ message: `Пользователь ${login} не найден` })
         }
-    })
-
-    const isValidPassword = bcrypt.compare(user.password, password)
-
-    if (user && isValidPassword) {
-        const token = generateToken(user.id)
-        res.json({ user, token })
-    } else {
-        res.status(401)
-        throw new Error('Email and password are not correct')
+        const isValidPassword = bcrypt.compareSync(password, user.password)
+        if (user && isValidPassword) {
+            const token = generateToken(user.id)
+            res.json({ user, token })
+        } else {
+            res.status(401).json({ message: 'Email и(или) пароль введены не корректно' })
+        }
+    } catch (e) {
+        console.log(e)
+        res.status(400).json({ message: 'Auth error' })
     }
-
-
-    res.json(user);
 })
 
 
@@ -38,31 +43,54 @@ export const authUser = asyncHandler(async (req, res) => {
 // @access  Public
 
 export const registerUser = asyncHandler(async (req, res) => {
-    console.log(req.body)
-    const { email, password, login } = req.body
+    try {
+        const { email, password, login } = req.body
 
-    const isHaveUser = await prisma.parents.findFirst({
-        where: {
-            email
+        const isHaveUser = await prisma.parents.findFirst({
+            where: {
+                login
+            }
+        })
+
+        if (isHaveUser) {
+            res.status(400).json({ message: 'Пользователь с таким email уже зарегистрирован!' })
         }
-    })
 
-    if (isHaveUser) {
-        res.status(400)
-        throw new Error('User already exists')
+        const user = await prisma.parents.create({
+            data: {
+                email,
+                password: bcrypt.hashSync(password, 5),
+                login,
+                hash: 'bcrypt'
+            }
+        })
+        const token = generateToken(user.id)
+        res.json({ user, token });
+    } catch (e) {
+        console.log(e)
+        res.status(400).json({ message: 'Register error' })
     }
+})
 
-    const user = await prisma.parents.create({
-        data: {
-            email,
-            password: await bcrypt.hash(password, 5),
-            login,
-            hash: 'bcrypt'
+
+export const refresh = asyncHandler(async (req, res) => {
+    try {
+        const { token } = req.body
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const userFound = await prisma.parents.findFirst({
+            where: {
+                id: decoded.userId
+            }
+        })
+        console.log(userFound)
+
+        if (userFound) {
+            res.json(userFound)
+        } else {
+            res.status(401).json({ message: 'Пользователь не найден' })
         }
-    })
-
-
-    const token = generateToken(user.id)
-
-    res.json({ user, token });
+    } catch (e) {
+        console.log(e)
+        res.status(400).json({ message: 'Auth error' })
+    }
 })

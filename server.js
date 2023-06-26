@@ -45,13 +45,12 @@ async function main() {
 
     app.use('/api/lessons', lessonsRoutes)
 
-    app.use('/api/pay', payRoutes)
-
+    // app.use('/api/pay', payRoutes)
 
     app.use(notFound)
     app.use(errorHandler)
 
-    app.listen(PORT, console.log(`🌐 Serever работает PORT = ${PORT}`.blue.bold))
+    app.listen(PORT, console.log(`🌐 Server работает PORT = ${PORT}`.blue.bold))
 }
 
 

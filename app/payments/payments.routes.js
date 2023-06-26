@@ -7,6 +7,6 @@ import { getPayments } from "./payments.controller.js";
 const router = express.Router();
 
 
-router.route('/').get(protect, getPayments);
+router.route('/:id/:idgroup').get(protect, getPayments);
 
 export default router;
